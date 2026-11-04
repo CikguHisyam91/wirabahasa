@@ -121,7 +121,7 @@ canvas{width:100%;height:100%;display:block;image-rendering:auto}
   <button class="btn blue" id="bCont">SAMBUNG TAHAP 1</button>
   <button class="btn blue" id="bDemo">🎬 TONTON DEMO (30 SAAT)</button>
   <div class="lb"><h4>🏆 Papan Pendahulu</h4><div id="lbList"></div></div>
-  <div class="hint">Kawalan: ⬅️➡️ gerak • ⬆️ halakan ke atas • Z lompat • X tembak (tahan = cas kuasa) • C bom (jika ada)</div>
+  <div class="hint">Kawalan: ⬅️➡️ gerak • ⬆️ halakan ke atas • Z lompat • X tembak (tahan = cas kuasa, ⬆️ + tahan X = cas ke atas) • C bom (jika ada)</div>
   <button class="btn red" id="bOut">LOG KELUAR</button>
  </div>
 </div>
@@ -380,7 +380,7 @@ function fire(){
 }
 function fireCharge(lv){
  const p=G.p;let dx=p.face,dy=0;
- if(keys.U){if(keys.L||keys.R){dx=p.face*0.7;dy=-0.7}else{dx=0;dy=-1}}
+ if(keys.U||p.ut<20){if(keys.L||keys.R){dx=p.face*0.7;dy=-0.7}else{dx=0;dy=-1}}
  const sz=lv===2?30:18,ox=p.x+p.w/2+dx*14-sz/2,oy=p.y+18+dy*20-sz/2;
  G.pb.push({x:ox,y:oy,vx:dx*13,vy:dy*13,w:sz,h:sz,d:lv===2?8+G.tier*2:3+G.tier,l:90,big:true,cg:lv,hs:[]});
  p.cd=10;G.shake=lv===2?8:3;snd(lv===2?140:260,0.3,"sawtooth",0.06);
@@ -407,6 +407,7 @@ function update(f){
   else if(p.vy>0){for(const pl of G.plats){if(p.x+p.w>pl.x&&p.x<pl.x+pl.w&&oy+p.h<=pl.y+1&&p.y+p.h>=pl.y){p.y=pl.y-p.h;p.vy=0;p.onG=true}}}
   if(p.x<G.cam+5)p.x=G.cam+5; if(p.x>G.len-40)p.x=G.len-40;
   if(p.cd>0)p.cd-=f; if(keys.F){if(!p.fw&&p.cd<=0)fire();if(p.fw||p.cd>0)p.ch+=f;else p.ch=0;p.fw=true;if(G.demo&&p.cd<=0)fire()}else{if(p.fw&&p.ch>=35)fireCharge(p.ch>=90?2:1);p.fw=false;p.ch=0}
+  p.ut=keys.U?0:(p.ut===undefined?99:p.ut+f);
   if(p.inv>0)p.inv-=f;
   if(!G.bossOn){G.cam=Math.max(G.cam,Math.min(p.x-360,G.len-W))}
   if(!G.bossOn&&G.cam>=G.len-W-1){G.bossOn=true;G.banner="⚠ AMARAN! BOS: "+G.boss.name;G.bannerT=150;snd(110,0.6,"sawtooth",0.06)}
