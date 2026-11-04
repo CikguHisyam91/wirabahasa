@@ -121,7 +121,7 @@ canvas{width:100%;height:100%;display:block;image-rendering:auto}
   <button class="btn blue" id="bCont">SAMBUNG TAHAP 1</button>
   <button class="btn blue" id="bDemo">🎬 TONTON DEMO (30 SAAT)</button>
   <div class="lb"><h4>🏆 Papan Pendahulu</h4><div id="lbList"></div></div>
-  <div class="hint">Kawalan: ⬅️➡️ gerak • ⬆️ halakan ke atas • SPACE lompat • J / X tembak</div>
+  <div class="hint">Kawalan: ⬅️➡️ gerak • ⬆️ halakan ke atas • Z lompat • X tembak (tahan = cas kuasa) • C bom (jika ada)</div>
   <button class="btn red" id="bOut">LOG KELUAR</button>
  </div>
 </div>
@@ -284,7 +284,7 @@ $("bPlay").onclick=function(){startGame(1)};
 $("bCont").onclick=function(){startGame(U().lv)};
 $("bDemo").onclick=function(){startDemo()};
 $("bDemoA").onclick=function(){startDemo()};
-const CAPS=[[0,"⬅️ ➡️  Gerak ke kiri dan kanan"],[4,"💥 Tekan J / X untuk menembak"],[8,"⤒ Tekan SPACE untuk melompat"],[12,"⬆️ Halakan senjata ke atas untuk tembak dron"],[16,"💀 Mati? Jawab 5 soalan BM untuk naik taraf senjata!"],[21,"👹 Kalahkan BOS di hujung setiap tahap!"],[26,"🎁 Lepas bos: minigame ejaan & peribahasa!"]];
+const CAPS=[[0,"⬅️ ➡️  Gerak ke kiri dan kanan"],[4,"💥 Tekan X untuk menembak, tahan X untuk cas tembakan kuat"],[8,"⤒ Tekan Z untuk melompat"],[12,"⬆️ Halakan senjata ke atas untuk tembak dron"],[16,"💀 Mati? Jawab 5 soalan BM untuk naik taraf senjata!"],[21,"👹 Kalahkan BOS di hujung setiap tahap!"],[26,"🎁 Lepas bos: minigame ejaan & peribahasa!"]];
 function startDemo(){
  G={lv:1,tahun:3,score:0,lives:3,tier:2,paused:false,shake:0,t:0,banner:"",bannerT:0,over:false,demo:true,demoT:0};
  buildLevel();G.bannerT=0;show("gameScr");last=performance.now();requestAnimationFrame(loop);$("touch").style.display="none";
@@ -342,10 +342,10 @@ function buildLevel(){
  spawnPlayer(80);
  G.banner="TAHAP "+n+": "+G.th.n; G.bannerT=180;
 }
-function spawnPlayer(x){G.p={x:x,y:200,w:26,h:44,vx:0,vy:0,onG:false,face:1,aimUp:false,cd:0,inv:150,dead:false}}
+function spawnPlayer(x){G.p={x:x,y:200,w:26,h:44,vx:0,vy:0,onG:false,face:1,aimUp:false,cd:0,inv:150,dead:false,hp:100,ch:0,fw:false}}
 
 /* ---------- Kawalan ---------- */
-const KM={ArrowLeft:"L",a:"L",A:"L",ArrowRight:"R",d:"R",D:"R",ArrowUp:"U",w:"U",W:"U"," ":"J",k:"J",K:"J",z:"J",Z:"J",j:"F",J:"F",x:"F",X:"F"};
+const KM={ArrowLeft:"L",a:"L",A:"L",ArrowRight:"R",d:"R",D:"R",ArrowUp:"U",w:"U",W:"U"," ":"J",k:"J",K:"J",z:"J",Z:"J",j:"F",J:"F",x:"F",X:"F",c:"B",C:"B"};
 addEventListener("keydown",function(e){if(!$("gameScr").classList.contains("on"))return;const k=KM[e.key];if(k){keys[k]=true;e.preventDefault()}if(e.key==="p"||e.key==="Escape")togglePause()});
 addEventListener("keyup",function(e){const k=KM[e.key];if(k)keys[k]=false});
 [["tL","L"],["tR","R"],["tU","U"],["tJ","J"],["tF","F"]].forEach(function(b){const el=$(b[0]);
@@ -378,6 +378,18 @@ function fire(){
  if(t<=1)b(0);else if(t===2){b(0);b(0.22);b(-0.22)}else{b(0);b(0.18);b(-0.18);b(0.36);b(-0.36)}
  p.cd=[14,7,12,11,8][t]; snd(t>=4?220:520,0.08,"square",0.03);
 }
+function fireCharge(lv){
+ const p=G.p;let dx=p.face,dy=0;
+ if(keys.U){if(keys.L||keys.R){dx=p.face*0.7;dy=-0.7}else{dx=0;dy=-1}}
+ const sz=lv===2?30:18,ox=p.x+p.w/2+dx*14-sz/2,oy=p.y+18+dy*20-sz/2;
+ G.pb.push({x:ox,y:oy,vx:dx*13,vy:dy*13,w:sz,h:sz,d:lv===2?8+G.tier*2:3+G.tier,l:90,big:true,cg:lv,hs:[]});
+ p.cd=10;G.shake=lv===2?8:3;snd(lv===2?140:260,0.3,"sawtooth",0.06);
+}
+function hurt(dm){
+ const p=G.p;if(p.dead||G.demo||p.inv>0)return;
+ p.hp-=dm;p.inv=70;G.shake=8;snd(160,0.15,"square",0.05);boom(p.x+13,p.y+22,"#ff9f43",8);
+ if(p.hp<=0){p.hp=0;die()}
+}
 function eShoot(x,y,sp){const p=G.p;const a=Math.atan2(p.y+20-y,p.x+13-x);G.eb.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,w:8,h:8,l:200})}
 
 function update(f){
@@ -394,7 +406,8 @@ function update(f){
   if(p.y+p.h>=GROUND){p.y=GROUND-p.h;p.vy=0;p.onG=true}
   else if(p.vy>0){for(const pl of G.plats){if(p.x+p.w>pl.x&&p.x<pl.x+pl.w&&oy+p.h<=pl.y+1&&p.y+p.h>=pl.y){p.y=pl.y-p.h;p.vy=0;p.onG=true}}}
   if(p.x<G.cam+5)p.x=G.cam+5; if(p.x>G.len-40)p.x=G.len-40;
-  if(p.cd>0)p.cd-=f; if(keys.F&&p.cd<=0)fire(); if(p.inv>0)p.inv-=f;
+  if(p.cd>0)p.cd-=f; if(keys.F){if(!p.fw&&p.cd<=0)fire();if(p.fw||p.cd>0)p.ch+=f;else p.ch=0;p.fw=true;if(G.demo&&p.cd<=0)fire()}else{if(p.fw&&p.ch>=35)fireCharge(p.ch>=90?2:1);p.fw=false;p.ch=0}
+  if(p.inv>0)p.inv-=f;
   if(!G.bossOn){G.cam=Math.max(G.cam,Math.min(p.x-360,G.len-W))}
   if(!G.bossOn&&G.cam>=G.len-W-1){G.bossOn=true;G.banner="⚠ AMARAN! BOS: "+G.boss.name;G.bannerT=150;snd(110,0.6,"sawtooth",0.06)}
  }
@@ -408,9 +421,9 @@ function update(f){
   if(e.tp==="soldier"){const dx=p.x-e.x;e.face=dx<0?-1:1;if(Math.abs(dx)>200)e.x+=e.face*(1+d*0.08)*f;e.cd-=f;if(e.cd<=0&&!p.dead){eShoot(e.x+13+e.face*12,e.y+16,esp);e.cd=Math.max(45,130-d*7)}}
   else if(e.tp==="drone"){if(!e.by)e.by=e.y;e.x-=(1+d*0.05)*f;e.ph+=0.05*f;e.y=e.by+Math.sin(e.ph)*30;e.cd-=f;if(e.cd<=0&&!p.dead){G.eb.push({x:e.x+16,y:e.y+20,vx:0,vy:esp*0.9,w:8,h:8,l:200});e.cd=Math.max(50,140-d*7)}}
   else{e.cd-=f;if(e.cd<=0&&!p.dead){eShoot(e.x+16,e.y+6,esp);e.cd=Math.max(40,120-d*7)}}
-  for(const b of G.pb){if(b.l>0&&hit(b,e)){e.hp-=b.d;if(!b.big)b.l=0;e.fl=5;if(e.hp<=0){boom(e.x+e.w/2,e.y+e.h/2);G.score+=100;G.shake=6;snd(90,0.25,"sawtooth",0.05)}}}
+  for(const b of G.pb){if(b.l>0&&!(b.hs&&b.hs.indexOf(e)>=0)&&hit(b,e)){if(b.hs)b.hs.push(e);e.hp-=b.d;if(!b.big)b.l=0;e.fl=5;if(e.hp<=0){boom(e.x+e.w/2,e.y+e.h/2);G.score+=100;G.shake=6;snd(90,0.25,"sawtooth",0.05)}}}
   if(e.fl>0)e.fl-=f;
-  if(!p.dead&&p.inv<=0&&e.hp>0&&hit(p,e))die();
+  if(!p.dead&&p.inv<=0&&e.hp>0&&hit(p,e))hurt(25);
  }
  G.ens=G.ens.filter(function(e){return e.hp>0&&e.x>G.cam-120});
  /* bos */
@@ -426,12 +439,12 @@ function update(f){
    B.cd=Math.max(30,(95-d*5))/rage; snd(160,0.15,"sawtooth",0.04);
   }
   const core={x:B.x+20,y:B.y+40,w:B.w-30,h:B.h-60};
-  for(const b of G.pb){if(b.l>0&&hit(b,core)){B.hp-=b.d;if(!b.big)b.l=0;B.flash=4;G.score+=5}}
-  if(!p.dead&&p.inv<=0&&hit(p,core))die();
+  for(const b of G.pb){if(b.l>0&&!(b.hs&&b.hs.indexOf(B)>=0)&&hit(b,core)){if(b.hs)b.hs.push(B);B.hp-=b.d;if(!b.big)b.l=0;B.flash=4;G.score+=5}}
+  if(!p.dead&&p.inv<=0&&hit(p,core))hurt(35);
   if(B.hp<=0){B.dead=true;G.score+=2000+G.lv*500;G.shake=40;for(let i=0;i<8;i++)setTimeout(function(){if(G)boom(B.x+Math.random()*B.w,B.y+Math.random()*B.h,"#ffe066",26)},i*150);snd(60,1.2,"sawtooth",0.08);G.eb=[];setTimeout(levelClear,1800)}
  }
  /* peluru musuh */
- for(const b of G.eb){b.x+=b.vx*f;b.y+=b.vy*f;b.l-=f;if(!p.dead&&p.inv<=0&&hit(b,p)){b.l=0;die()}}
+ for(const b of G.eb){b.x+=b.vx*f;b.y+=b.vy*f;b.l-=f;if(!p.dead&&p.inv<=0&&hit(b,p)){b.l=0;hurt(20)}}
  G.eb=G.eb.filter(function(b){return b.l>0&&b.y<H+10&&b.y>-20&&b.x>G.cam-20&&b.x<G.cam+W+20});
  for(const q of G.fx){q.x+=q.vx*f;q.y+=q.vy*f;q.vy+=0.08*f;q.l-=f}
  G.fx=G.fx.filter(function(q){return q.l>0});
@@ -580,7 +593,7 @@ function drawSoldier(x,y,face,col,fl,t){
  cx.restore();
 }
 function drawPlayer(){
- const p=G.p;if(p.dead)return;if(p.inv>0&&Math.floor(p.inv/4)%2)return;
+ const p=G.p;if(p.dead)return;if(p.ch>=20&&!G.demo){const lv2=p.ch>=90;cx.strokeStyle=lv2?(Math.floor(G.t/3)%2?"#7ff":"#fff"):(Math.floor(G.t/4)%2?"#bfb":"#4f8");cx.lineWidth=3;cx.beginPath();cx.arc(p.x-G.cam+13,p.y+22,30+Math.sin(G.t*0.6)*4,0,6.28);cx.stroke()}if(p.inv>0&&Math.floor(p.inv/4)%2)return;
  if(sprPlayer(p))return;
  const x=p.x-G.cam+13,y=p.y,run=p.onG&&p.vx?Math.sin(G.t*0.45)*6:0;
  cx.save();cx.translate(x,y);cx.scale(p.face,1);
@@ -624,6 +637,7 @@ function drawHUD(){
  cx.font="12px 'Press Start 2P'";cx.fillStyle="#ffcc33";cx.fillText("MARKAH "+G.score,22,32);
  cx.fillStyle="#fff";cx.font="18px Nunito";if(IMG.nyawa){cx.imageSmoothingEnabled=false;for(let i=0;i<G.lives;i++)cx.drawImage(IMG.nyawa,22+i*24,42,22,22)}else{let h="";for(let i=0;i<G.lives;i++)h+="❤️";cx.fillText(h,22,58)}
  cx.font="bold 13px Nunito";cx.fillStyle="#7fdbff";cx.fillText("🔫 "+WEAP[G.tier],150,58);
+ {const hpv=G.p&&!G.p.dead?G.p.hp:0;cx.fillStyle="rgba(0,0,0,.45)";rr(10,78,300,22,10);cx.fillStyle="#333";rr(52,84,200,10,5);cx.fillStyle=hpv>50?"#2ecc71":hpv>25?"#f1c40f":"#e74c3c";rr(52,84,2*hpv,10,5);cx.font="bold 12px Nunito";cx.fillStyle="#fff";cx.fillText("HP",22,94);cx.fillText(Math.ceil(hpv)+"%",260,94)}
  cx.textAlign="center";cx.font="10px 'Press Start 2P'";cx.fillStyle="#fff";cx.fillText("TAHAP "+G.lv+" • "+G.th.n,W/2,26);
  if(!G.bossOn){const pr=Math.min(1,G.cam/(G.len-W));cx.fillStyle="rgba(0,0,0,.5)";rr(W/2-120,34,240,8,4);cx.fillStyle="#2ecc71";rr(W/2-120,34,240*pr,8,4)}
  else if(!G.boss.dead){cx.fillStyle="rgba(0,0,0,.6)";rr(W/2-200,36,400,18,8);cx.fillStyle="#e74c3c";rr(W/2-198,38,396*Math.max(0,G.boss.hp/G.boss.max),14,6);if(IMG.barbos)cx.drawImage(IMG.barbos,W/2-204,32,408,26);cx.font="bold 12px Nunito";cx.fillStyle="#fff";cx.fillText(G.boss.name,W/2,50)}
@@ -637,7 +651,7 @@ function draw(){
  if(!G)return;cx.save();
  if(G.shake>0)cx.translate((Math.random()-0.5)*G.shake*0.6,(Math.random()-0.5)*G.shake*0.6);
  drawBG();drawPlats();drawBoss();drawEnemies();drawPlayer();
- for(const b of G.pb){const x=b.x-G.cam;if(spr("peluru",b.big?"big":"small",x+4,b.y+4,1,0))continue;cx.fillStyle=b.big?"rgba(0,229,255,.35)":"rgba(255,230,80,.35)";cx.beginPath();cx.arc(x+4,b.y+4,b.big?9:7,0,6.28);cx.fill();cx.fillStyle=b.big?"#e0ffff":"#fff7c2";cx.beginPath();cx.arc(x+4,b.y+4,b.big?5:3.5,0,6.28);cx.fill()}
+ for(const b of G.pb){const x=b.x-G.cam;if(b.cg){const r2=b.w/2,cxp=x+r2,cyp=b.y+r2;cx.fillStyle=b.cg===2?"rgba(0,229,255,.35)":"rgba(120,255,160,.35)";cx.beginPath();cx.arc(cxp,cyp,r2+8,0,6.28);cx.fill();cx.fillStyle=b.cg===2?"#7ff":"#bfb";cx.beginPath();cx.arc(cxp,cyp,r2,0,6.28);cx.fill();cx.fillStyle="#fff";cx.beginPath();cx.arc(cxp,cyp,r2*0.5,0,6.28);cx.fill();continue}if(spr("peluru",b.big?"big":"small",x+4,b.y+4,1,0))continue;cx.fillStyle=b.big?"rgba(0,229,255,.35)":"rgba(255,230,80,.35)";cx.beginPath();cx.arc(x+4,b.y+4,b.big?9:7,0,6.28);cx.fill();cx.fillStyle=b.big?"#e0ffff":"#fff7c2";cx.beginPath();cx.arc(x+4,b.y+4,b.big?5:3.5,0,6.28);cx.fill()}
  for(const b of G.eb){const x=b.x-G.cam;if(spr("peluru","enemy",x+4,b.y+4,1,0))continue;cx.fillStyle="rgba(255,60,60,.4)";cx.beginPath();cx.arc(x+4,b.y+4,8,0,6.28);cx.fill();cx.fillStyle="#ffdddd";cx.beginPath();cx.arc(x+4,b.y+4,4,0,6.28);cx.fill()}
  for(const q of G.fx){cx.globalAlpha=Math.max(0,q.l/50);cx.fillStyle=q.c;cx.beginPath();cx.arc(q.x-G.cam,q.y,q.r,0,6.28);cx.fill()}cx.globalAlpha=1;
  drawLetupan();
