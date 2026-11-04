@@ -121,7 +121,7 @@ canvas{width:100%;height:100%;display:block;image-rendering:auto}
   <button class="btn blue" id="bCont">SAMBUNG TAHAP 1</button>
   <button class="btn blue" id="bDemo">🎬 TONTON DEMO (30 SAAT)</button>
   <div class="lb"><h4>🏆 Papan Pendahulu</h4><div id="lbList"></div></div>
-  <div class="hint">Kawalan: ⬅️➡️ gerak • ⬆️ halakan ke atas • SPACE lompat • J / X tembak</div>
+  <div class="hint">Kawalan: ⬅️➡️ gerak • ⬆️ halakan ke atas • Z lompat • X tembak • C bom (jika ada)</div>
   <button class="btn red" id="bOut">LOG KELUAR</button>
  </div>
 </div>
@@ -284,7 +284,7 @@ $("bPlay").onclick=function(){startGame(1)};
 $("bCont").onclick=function(){startGame(U().lv)};
 $("bDemo").onclick=function(){startDemo()};
 $("bDemoA").onclick=function(){startDemo()};
-const CAPS=[[0,"⬅️ ➡️  Gerak ke kiri dan kanan"],[4,"💥 Tekan J / X untuk menembak"],[8,"⤒ Tekan SPACE untuk melompat"],[12,"⬆️ Halakan senjata ke atas untuk tembak dron"],[16,"💀 Mati? Jawab 5 soalan BM untuk naik taraf senjata!"],[21,"👹 Kalahkan BOS di hujung setiap tahap!"],[26,"🎁 Lepas bos: minigame ejaan & peribahasa!"]];
+const CAPS=[[0,"⬅️ ➡️  Gerak ke kiri dan kanan"],[4,"💥 Tekan X untuk menembak"],[8,"⤒ Tekan Z untuk melompat"],[12,"⬆️ Halakan senjata ke atas untuk tembak dron"],[16,"💀 Mati? Jawab 5 soalan BM untuk naik taraf senjata!"],[21,"👹 Kalahkan BOS di hujung setiap tahap!"],[26,"🎁 Lepas bos: minigame ejaan & peribahasa!"]];
 function startDemo(){
  G={lv:1,tahun:3,score:0,lives:3,tier:2,paused:false,shake:0,t:0,banner:"",bannerT:0,over:false,demo:true,demoT:0};
  buildLevel();G.bannerT=0;show("gameScr");last=performance.now();requestAnimationFrame(loop);$("touch").style.display="none";
@@ -345,7 +345,7 @@ function buildLevel(){
 function spawnPlayer(x){G.p={x:x,y:200,w:26,h:44,vx:0,vy:0,onG:false,face:1,aimUp:false,cd:0,inv:150,dead:false}}
 
 /* ---------- Kawalan ---------- */
-const KM={ArrowLeft:"L",a:"L",A:"L",ArrowRight:"R",d:"R",D:"R",ArrowUp:"U",w:"U",W:"U"," ":"J",k:"J",K:"J",z:"J",Z:"J",j:"F",J:"F",x:"F",X:"F"};
+const KM={ArrowLeft:"L",a:"L",A:"L",ArrowRight:"R",d:"R",D:"R",ArrowUp:"U",w:"U",W:"U"," ":"J",k:"J",K:"J",z:"J",Z:"J",j:"F",J:"F",x:"F",X:"F",c:"B",C:"B"};
 addEventListener("keydown",function(e){if(!$("gameScr").classList.contains("on"))return;const k=KM[e.key];if(k){keys[k]=true;e.preventDefault()}if(e.key==="p"||e.key==="Escape")togglePause()});
 addEventListener("keyup",function(e){const k=KM[e.key];if(k)keys[k]=false});
 [["tL","L"],["tR","R"],["tU","U"],["tJ","J"],["tF","F"]].forEach(function(b){const el=$(b[0]);
