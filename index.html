@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a1228">
+<title>Carta Langsung Kejohanan Silat</title>
+<meta name="description" content="Carta perlawanan, jadual, keputusan dan pingat secara langsung.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%8B%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--bg:#0a1228;--bg2:#16264d;--sf:#111c3a;--sf2:#16264d;--ln:rgba(160,180,220,.14);--tx:#eaf0fb;--mu:#9fb0d2;--au:#f1c232;--au2:#ffe08a;--biru:#1d4ed8;--merah:#dc2626;--ok:#4ade80}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:calc(76px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 14px}
+  /* header */
+  header{background:linear-gradient(180deg,var(--bg2),var(--bg));border-bottom:1px solid var(--ln);padding:16px 0 12px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand .lg{font-size:28px}
+  .brand h1{font-size:17px;line-height:1.25;color:var(--au);font-weight:800}
+  .brand p{font-size:12px;color:var(--mu);margin-top:2px}
+  .live{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:var(--mu);flex-wrap:wrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 2s infinite}
+  .dot.off{background:#f87171;animation:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.55)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+  .live b{color:var(--tx)}
+  .rbtn{margin-left:auto;background:rgba(241,194,50,.12);color:var(--au2);border:1px solid rgba(241,194,50,.35);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700}
+  /* tabs */
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(10,18,40,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--ln);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+  nav.tabs button{flex:1;background:none;border:none;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;font-size:11px;font-weight:700}
+  nav.tabs button .i{font-size:20px;line-height:1}
+  nav.tabs button.on{color:var(--au2);background:rgba(241,194,50,.12)}
+  @media(min-width:820px){
+    body{padding-bottom:30px}
+    nav.tabs{position:sticky;top:0;bottom:auto;border-top:none;border-bottom:1px solid var(--ln);justify-content:center;gap:6px;padding:8px}
+    nav.tabs button{flex:0 0 auto;flex-direction:row;gap:7px;font-size:14px;padding:9px 18px;border-radius:999px}
+    nav.tabs button .i{font-size:17px}
+  }
+  main{padding:14px 0 20px}
+  .card{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
+  h2.st{font-size:15px;color:var(--au2);margin:4px 0 12px;display:flex;align-items:center;gap:8px}
+  .muted{color:var(--mu);font-size:12.5px}
+  .search{width:100%;padding:12px 14px 12px 40px;border-radius:12px;border:1px solid var(--ln);background:var(--sf) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%239fb0d2' stroke-width='2'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M13 13l4 4'/%3E%3C/svg%3E") no-repeat 13px center;color:var(--tx);font-size:15px;outline:none;margin-bottom:10px}
+  .search:focus{border-color:var(--au)}
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;border:1px solid var(--ln);background:transparent;color:var(--mu);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700}
+  .chip.on{background:var(--au);color:#1c1400;border-color:var(--au)}
+  .seg{display:flex;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:4px;margin-bottom:12px}
+  .seg button{flex:1;border:none;background:none;color:var(--mu);font-weight:700;font-size:13px;padding:9px;border-radius:9px}
+  .seg button.on{background:var(--sf2);color:var(--au2)}
+  /* list kategori */
+  .grp{font-size:12px;font-weight:800;color:var(--au2);text-transform:uppercase;letter-spacing:.5px;margin:14px 2px 7px}
+  .krow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px 13px;margin-bottom:7px;color:var(--tx)}
+  .krow:active{transform:scale(.99)}
+  .krow .ic{font-size:20px}
+  .krow .nm{font-weight:700;font-size:14px;line-height:1.3}
+  .krow .mt{font-size:11.5px;color:var(--mu);margin-top:2px}
+  .krow .rt{margin-left:auto;text-align:right;flex-shrink:0}
+  .bdg{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:800;white-space:nowrap}
+  .b-live{background:rgba(74,222,128,.14);color:#86efac}
+  .b-done{background:rgba(241,194,50,.16);color:var(--au2)}
+  .b-wait{background:rgba(160,180,220,.12);color:var(--mu)}
+  .krow.off{opacity:.55}
+  /* detail */
+  .back{background:none;border:1px solid var(--ln);color:var(--mu);border-radius:10px;padding:8px 13px;font-weight:700;font-size:13px;margin-bottom:10px}
+  .dtitle{font-size:16px;font-weight:800;color:var(--au2);line-height:1.3}
+  .dsub{font-size:12.5px;color:var(--mu);margin:3px 0 12px}
+  /* bracket */
+  .bwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:12px 2px 8px;margin:0 -2px}
+  .bracket{display:flex;gap:14px;min-width:min-content}
+  .bcol{display:flex;flex-direction:column;min-width:172px;max-width:190px}
+  .bcol .rh{text-align:center;font-size:10.5px;color:var(--au2);font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+  .bround{display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:10px}
+  .match{background:rgba(0,0,0,.25);border:1px solid var(--ln);border-radius:10px;padding:7px;position:relative}
+  .mno{position:absolute;top:-9px;left:8px;background:var(--au);color:#1c1400;font-size:9.5px;font-weight:800;border-radius:9px;padding:1px 7px}
+  .mno.auto{background:rgba(160,180,220,.18);color:var(--mu)}
+  .tm{border-radius:6px;padding:6px 8px;font-size:12px;margin:3px 0;color:#fff;line-height:1.25;position:relative}
+  .tm small{display:block;font-size:10px;opacity:.82}
+  .tm.biru{background:var(--biru)}.tm.merah{background:var(--merah)}
+  .tm.win{outline:2px solid var(--au);outline-offset:1px}
+  .tm.lose{opacity:.38}
+  .tm.wait{background:rgba(255,255,255,.05);color:var(--mu);font-style:italic;text-align:center}
+  .tm.bye{background:rgba(255,255,255,.04);color:#6b7a99;text-align:center}
+  .tm.dq{background:rgba(255,255,255,.04);color:#fca5a5;text-decoration:line-through}
+  .wb{position:absolute;top:5px;right:6px;background:var(--au);color:#1c1400;font-size:9px;font-weight:800;border-radius:5px;padding:1px 5px}
+  .champ{display:flex;align-items:center;justify-content:center;min-height:90px;border-color:var(--au);background:rgba(241,194,50,.08);text-align:center;color:var(--au2)}
+  .champ .t{font-size:26px}.champ .cn{font-weight:800;font-size:13px;margin-top:2px}.champ .l{font-size:10.5px;opacity:.8}
+  .hint{font-size:11.5px;color:var(--mu);margin-top:6px}
+  /* jadual table */
+  .tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+  .tbl th{text-align:left;color:var(--mu);font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:8px 6px;border-bottom:1px solid var(--ln)}
+  .tbl td{padding:9px 6px;border-bottom:1px solid var(--ln);vertical-align:top}
+  .tbl td small{color:var(--mu);font-size:10.5px}
+  .no{display:inline-block;background:var(--au);color:#1c1400;font-weight:800;border-radius:7px;min-width:34px;text-align:center;padding:2px 4px;font-size:12px}
+  .sb{border-left:3px solid var(--biru)}.sm{border-left:3px solid var(--merah)}
+  .done td{opacity:.6}
+  .won{color:var(--au2);font-weight:800}
+  .phase{display:flex;align-items:center;gap:8px;margin:14px 0 6px}
+  .phase .pl{background:var(--au);color:#1c1400;font-weight:800;font-size:11px;border-radius:7px;padding:3px 10px}
+  .phase .pd{flex:1;height:1px;background:var(--ln)}
+  .phase .pc{font-size:11px;color:var(--mu)}
+  /* seni giliran */
+  .gl{display:flex;gap:11px;align-items:flex-start;background:rgba(0,0,0,.2);border:1px solid var(--ln);border-radius:11px;padding:10px 12px;margin-bottom:7px}
+  .gl .g{width:32px;height:32px;border-radius:50%;background:var(--au);color:#1c1400;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+  .gl .p{font-weight:700;font-size:13.5px}
+  .gl .a{font-size:11.5px;color:var(--mu);margin-top:2px}
+  .gl .m{margin-left:auto;text-align:right;font-weight:800;color:var(--au2);font-size:13px;flex-shrink:0}
+  /* keputusan */
+  .res{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:11px 13px;margin-bottom:8px}
+  .res .k{font-weight:800;font-size:13px;margin-bottom:6px;line-height:1.3}
+  .res .r{display:flex;gap:9px;align-items:baseline;font-size:13px;padding:3px 0}
+  .res .r .md{width:22px;flex-shrink:0}
+  .res .r small{color:var(--mu);font-size:11px}
+  .res .r .sk{margin-left:auto;color:var(--au2);font-weight:800;font-size:12px}
+  /* pingat */
+  .ptbl td,.ptbl th{text-align:center}
+  .ptbl td:nth-child(2),.ptbl th:nth-child(2){text-align:left}
+  .rk1 td{background:rgba(241,194,50,.08)}
+  .ivgrid{display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:720px){ .ivgrid{grid-template-columns:1fr 1fr} }
+  .iv{background:var(--sf);border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+  .iv .h{background:rgba(241,194,50,.12);color:var(--au2);font-weight:800;font-size:12.5px;padding:8px 12px}
+  .iv .c{display:grid;grid-template-columns:1fr 1fr}
+  .iv .j{padding:8px 10px}.iv .j+.j{border-left:1px solid var(--ln)}
+  .iv .jh{font-size:11px;font-weight:800;color:var(--mu);margin-bottom:4px}
+  .iv .rr{display:flex;gap:6px;font-size:12px;padding:3px 0;align-items:baseline}
+  .iv .rr b{display:block;font-size:12px}.iv .rr small{color:var(--mu);font-size:10.5px}
+  .iv .rr .n{width:16px;flex-shrink:0;color:var(--mu);font-weight:800}
+  .empty{text-align:center;color:var(--mu);padding:26px 10px;font-size:13px;line-height:1.6}
+  .empty .big{font-size:34px;margin-bottom:6px}
+  .err{background:rgba(220,38,38,.14);border:1px solid rgba(220,38,38,.4);color:#fecaca;border-radius:12px;padding:10px 13px;font-size:12.5px;margin-bottom:12px}
+  .skel{height:58px;border-radius:12px;background:linear-gradient(90deg,var(--sf) 25%,var(--sf2) 50%,var(--sf) 75%);background-size:200% 100%;animation:sk 1.2s infinite;margin-bottom:8px}
+  @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .hide{display:none!important}
+  footer{text-align:center;font-size:11px;color:var(--mu);padding:10px 0 20px}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><span class="lg">🥋</span><div><h1 id="hTajuk">Kejohanan Silat</h1><p id="hInfo">Carta Langsung</p></div></div>
+    <div class="live"><span class="dot" id="dot"></span><span id="liveTxt">Memuatkan…</span><button class="rbtn" id="bSegar" onclick="muat(true)">🔄 Segar</button></div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-t="carta" onclick="tukarTab('carta')"><span class="i">🏆</span>Carta</button>
+  <button data-t="jadual" onclick="tukarTab('jadual')"><span class="i">📋</span>Jadual</button>
+  <button data-t="keputusan" onclick="tukarTab('keputusan')"><span class="i">🥇</span>Keputusan</button>
+  <button data-t="pingat" onclick="tukarTab('pingat')"><span class="i">🏅</span>Pingat</button>
+</nav>
+
+<main class="wrap">
+  <div id="errBox" class="err hide"></div>
+  <div id="view"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+</main>
+<footer>Paparan awam • dikemas kini automatik setiap 30 saat</footer>
+
+<script>
+  /* =====================================================================
+     ⚙️ TETAPAN — TAMPAL URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+     (URL yang berakhir dengan /exec — dari Deploy > Manage deployments)
+     ===================================================================== */
+  var API_URL = 'https://script.google.com/macros/s/AKfycbygqx3wrp8dXwFcDHVhzU2iGd-eOxACEzNH5lBuJyZTrdZOVVIB_cSgEx27c1YoQ0w/exec';
+  var SEGAR_SAAT = 30;
+
+  /* ===================== keadaan ===================== */
+  var D=null, TAB='carta', KAT=null, SUB='olah', JSUB='olah', FILTER='Semua', Q='', LAST=0, NEXT=SEGAR_SAAT, SIBUK=false, GAGAL=0;
+  var IC={'Silat Olahraga':'🥊','Seni Silat':'🎭','Silat Seni':'🌟','Gayong Warisan':'🏮'};
+  var ORDER=['Silat Olahraga','Seni Silat','Silat Seni','Gayong Warisan'];
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function $(id){ return document.getElementById(id); }
+
+  /* ===================== ambil data ===================== */
+  function muat(manual){
+    if(SIBUK) return;
+    if(!API_URL || API_URL.indexOf('script.google.com')<0){ tunjukRalat('URL Web App belum ditetapkan dalam index.html (API_URL).'); return; }
+    SIBUK=true; if(manual){ $('bSegar').textContent='⏳'; }
+    var url=API_URL+(API_URL.indexOf('?')>=0?'&':'?')+'api=awam&t='+Date.now();
+    fetch(url,{method:'GET',redirect:'follow',cache:'no-store'})
+      .then(function(r){ if(!r.ok) throw new Error('Pelayan membalas kod '+r.status); return r.text(); })
+      .then(function(t){
+        var j; try{ j=JSON.parse(t); }catch(e){ throw new Error('Jawapan pelayan bukan JSON. Pastikan Web App diset "Who has access: Anyone" dan sudah Deploy versi baharu.'); }
+        if(!j || !j.ok) throw new Error((j && j.msg) || 'Data tidak sah.');
+        D=j; LAST=Date.now(); GAGAL=0; $('errBox').classList.add('hide'); $('dot').classList.remove('off');
+        kepala(); render(true);
+      })
+      .catch(function(e){
+        GAGAL++; $('dot').classList.add('off');
+        tunjukRalat((e && e.message && /fetch|network|Load failed/i.test(e.message)) ? 'Tiada sambungan internet atau pelayan Google tidak dapat dihubungi. Akan cuba lagi…' : ((e&&e.message)||'Ralat.'));
+        if(!D) $('view').innerHTML='<div class="empty"><div class="big">📡</div>Data belum dapat dimuatkan.<br>Sila tunggu, sistem akan cuba semula.</div>';
+      })
+      .then(function(){ SIBUK=false; NEXT=SEGAR_SAAT; $('bSegar').textContent='🔄 Segar'; liveTeks(); });
+  }
+  function tunjukRalat(m){ var b=$('errBox'); b.textContent='⚠️ '+m; b.classList.remove('hide'); }
+  function liveTeks(){
+    var t=$('liveTxt'); if(!t) return;
+    if(!LAST){ t.innerHTML='Memuatkan…'; return; }
+    var d=new Date(LAST), hh=('0'+d.getHours()).slice(-2), mm=('0'+d.getMinutes()).slice(-2), ss=('0'+d.getSeconds()).slice(-2);
+    t.innerHTML='<b>LANGSUNG</b> • kemas kini '+hh+':'+mm+':'+ss+' • segar dalam '+NEXT+'s';
+  }
+  setInterval(function(){
+    if(document.hidden) return;
+    NEXT--; if(NEXT<=0){ NEXT=SEGAR_SAAT; muat(false); }
+    liveTeks();
+  },1000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden && LAST && Date.now()-LAST>SEGAR_SAAT*1000) muat(false); });
+
+  function kepala(){
+    var k=D.kejohanan||{};
+    if(k.tajuk){ $('hTajuk').textContent=k.tajuk; document.title=k.tajuk+' — Carta Langsung'; }
+    $('hInfo').textContent=[k.tarikh,k.tempat].filter(Boolean).join(' • ')||'Carta Langsung';
+  }
+
+  /* ===================== navigasi ===================== */
+  function tukarTab(t){ TAB=t; KAT=null; Q=''; try{ history.replaceState(null,'','#'+t); }catch(e){} render(false); window.scrollTo(0,0); }
+  function bukaKat(id){ KAT=id; try{ history.pushState({k:id},'','#'+TAB+'/'+id); }catch(e){} render(false); window.scrollTo(0,0); }
+  function tutupKat(){ KAT=null; try{ history.replaceState(null,'','#'+TAB); }catch(e){} render(false); }
+  window.addEventListener('popstate',function(){ if(KAT){ KAT=null; render(false); } });
+  function setFilter(f){ FILTER=f; render(false); }
+  function setSub(s){ SUB=s; render(false); }
+  function setJSub(s){ JSUB=s; render(false); }
+  function cari(v){ Q=v; var box=$('listBox'); if(box) box.innerHTML=senaraiKatHTML(); }
+
+  /* simpan & pulih kedudukan tatal bila data dikemas kini */
+  function render(kekal){
+    document.querySelectorAll('#tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-t')===TAB); });
+    if(!D) return;
+    var y=window.scrollY, bw=document.querySelector('.bwrap'), bx=bw?bw.scrollLeft:0;
+    var ae=document.activeElement, fokusCari=(ae && ae.id==='qCari'), pos=fokusCari?ae.selectionStart:0;
+    var h='';
+    if(TAB==='carta') h=KAT?detailHTML():cartaHTML();
+    else if(TAB==='jadual') h=jadualHTML();
+    else if(TAB==='keputusan') h=keputusanHTML();
+    else h=pingatHTML();
+    $('view').innerHTML=h;
+    if(kekal){ window.scrollTo(0,y); var bw2=document.querySelector('.bwrap'); if(bw2) bw2.scrollLeft=bx; }
+    if(fokusCari){ var q=$('qCari'); if(q){ q.focus(); try{ q.setSelectionRange(pos,pos); }catch(e){} } }
+  }
+
+  /* ===================== bantu ===================== */
+  function katById(id){ var k=null; (D.kategori||[]).forEach(function(x){ if(x.id===id) k=x; }); return k; }
+  function padPow2(slots){ var n=slots.length; if(n<2) return slots.slice(); var p=1; while(p<n) p*=2; var o=slots.slice(); for(var i=n;i<p;i++) o.push({pesilat:'BYE',pasukan:'',bye:true}); return o; }
+  function out0(x){ return !!(x && (x.bye||x.dq)); }
+  function bina(c){
+    var slots=padPow2(c.slots||[]), size=slots.length; if(size<2) return null;
+    var rounds=Math.round(Math.log(size)/Math.log(2)), byR=[], r0=[];
+    for(var m=0;m<size/2;m++) r0.push({_r:0,idx:m,a:slots[2*m],b:slots[2*m+1],winner:'',win:'',skor:''});
+    byR.push(r0);
+    for(var r=1;r<rounds;r++){ var rm=[]; for(var q=0;q<byR[r-1].length/2;q++) rm.push({_r:r,idx:q,fa:byR[r-1][2*q],fb:byR[r-1][2*q+1],winner:'',win:'',skor:''}); byR.push(rm); }
+    byR[0].forEach(function(m){ m.aP=!out0(m.a); m.bP=!out0(m.b); });
+    for(var rr=1;rr<rounds;rr++) byR[rr].forEach(function(m){ m.aP=(m.fa.aP||m.fa.bP); m.bP=(m.fb.aP||m.fb.bP); });
+    var no=1; byR.forEach(function(rm,ri){ rm.forEach(function(mt){ mt.no=(mt.aP&&mt.bP)?(no++):null; mt.induk=(c.induk&&c.induk[ri+'_'+mt.idx])?c.induk[ri+'_'+mt.idx]:null; }); });
+    (c.keputusan||[]).forEach(function(x){ if(byR[x.round] && byR[x.round][x.idx]){ var mm=byR[x.round][x.idx]; mm.winner=x.winner; mm.win=x.jenis||''; mm.skor=x.skor||''; } });
+    return {byR:byR, rounds:rounds};
+  }
+  function pemenang(m){ if(!m) return null; if(m._r===0){ if(out0(m.a)&&!out0(m.b)) return m.b; if(out0(m.b)&&!out0(m.a)) return m.a; if(out0(m.a)&&out0(m.b)) return null; if(m.winner) return m.winner==='a'?m.a:m.b; return null; } if(!m.winner) return null; return peserta(m,m.winner); }
+  function peserta(m,side){ if(m._r===0) return side==='a'?m.a:m.b; return pemenang(side==='a'?m.fa:m.fb); }
+  function namaP(left){ if(left===1) return 'Akhir'; if(left===2) return 'Separuh Akhir'; if(left===3) return 'Suku Akhir'; return 'Pusingan '+Math.pow(2,left); }
+  function statusOlah(id){
+    var c=D.carta[id]; if(!c) return {t:'wait',l:'Belum diundi'};
+    var b=bina(c); if(!b) return {t:'wait',l:'—'};
+    var ch=pemenang(b.byR[b.rounds-1][0]);
+    if(ch) return {t:'done',l:'🏆 '+ch.pesilat};
+    var main=0,jum=0; b.byR.forEach(function(rm){ rm.forEach(function(m){ if(m.no){ jum++; if(m.winner) main++; } }); });
+    return main?{t:'live',l:main+'/'+jum+' selesai'}:{t:'wait',l:jum+' perlawanan'};
+  }
+  function seniMarkah(sub){ var s=null; ((D.pingat||{}).seni||[]).forEach(function(x){ if(x.sub===sub) s=x; }); return s; }
+  function statusSeni(k){
+    if(!D.seni[k.id]) return {t:'wait',l:'Belum diundi'};
+    var m=seniMarkah(k.sub);
+    if(m && m.selesai) return {t:'done',l:'🏆 '+((m.ranking[0]||{}).pasukan||'Selesai')};
+    if(m) return {t:'live',l:'Markah masuk'};
+    return {t:'wait',l:D.seni[k.id].length+' giliran'};
+  }
+
+  /* ===================== CARTA ===================== */
+  function senaraiKatHTML(){
+    var q=(Q||'').toLowerCase().trim(), grp={}, n=0;
+    (D.kategori||[]).forEach(function(k){
+      if(FILTER!=='Semua' && k.acara!==FILTER) return;
+      if(q){
+        var hay=(k.sub+' '+k.acara).toLowerCase();
+        var c=D.carta[k.id]; if(c) c.slots.forEach(function(s){ hay+=' '+(s.pesilat||'')+' '+(s.pasukan||''); });
+        var sn=D.seni[k.id]; if(sn) sn.forEach(function(s){ hay+=' '+s.pasukan+' '+(s.ahli||[]).join(' '); });
+        if(hay.toLowerCase().indexOf(q)<0) return;
+      }
+      (grp[k.acara]=grp[k.acara]||[]).push(k); n++;
+    });
+    if(!n) return '<div class="empty"><div class="big">🔍</div>Tiada kategori sepadan'+(q?' dengan "<b>'+esc(Q)+'</b>"':'')+'.</div>';
+    var h='', ord=ORDER.slice(); Object.keys(grp).forEach(function(a){ if(ord.indexOf(a)<0) ord.push(a); });
+    ord.forEach(function(ac){ if(!grp[ac]) return;
+      h+='<div class="grp">'+(IC[ac]||'•')+' '+esc(ac)+' ('+grp[ac].length+')</div>';
+      grp[ac].forEach(function(k){
+        var st=(k.jenis==='olahraga')?statusOlah(k.id):statusSeni(k), bdg=st.t==='done'?'b-done':(st.t==='live'?'b-live':'b-wait');
+        var off=!k.drawn;
+        h+='<button class="krow'+(off?' off':'')+'" '+(off?'disabled':'onclick="bukaKat(\''+k.id+'\')"')+'><span class="ic">'+(IC[k.acara]||'•')+'</span><span><div class="nm">'+esc(k.sub)+'</div><div class="mt">'+k.bil+(k.jenis==='olahraga'?' pesilat':' penyertaan')+'</div></span><span class="rt"><span class="bdg '+bdg+'">'+esc(st.l)+'</span></span></button>';
+      });
+    });
+    return h;
+  }
+  function cartaHTML(){
+    var ada={}; (D.kategori||[]).forEach(function(k){ ada[k.acara]=1; });
+    if(!(D.kategori||[]).length) return '<div class="empty"><div class="big">🗂️</div>Belum ada kategori dengan penyertaan.</div>';
+    var ch=['Semua'].concat(ORDER.filter(function(a){ return ada[a]; }));
+    var h='<input class="search" id="qCari" placeholder="Cari nama pesilat, pasukan atau kategori…" value="'+esc(Q)+'" oninput="cari(this.value)">';
+    h+='<div class="chips">'+ch.map(function(c){ return '<button class="chip'+(FILTER===c?' on':'')+'" onclick="setFilter(\''+c+'\')">'+(IC[c]?IC[c]+' ':'')+esc(c)+'</button>'; }).join('')+'</div>';
+    return h+'<div id="listBox">'+senaraiKatHTML()+'</div>';
+  }
+  function detailHTML(){
+    var k=katById(KAT); if(!k){ KAT=null; return cartaHTML(); }
+    var h='<button class="back" onclick="tutupKat()">‹ Kembali</button><div class="dtitle">'+(IC[k.acara]||'')+' '+esc(k.acara)+'</div><div class="dsub">'+esc(k.sub)+'</div>';
+    if(k.jenis==='olahraga'){
+      var c=D.carta[k.id], b=c?bina(c):null;
+      if(!b) return h+'<div class="empty">Carta belum tersedia.</div>';
+      h+='<div class="seg"><button class="'+(SUB==='olah'?'on':'')+'" onclick="setSub(\'olah\')">📊 Carta</button><button class="'+(SUB==='senarai'?'on':'')+'" onclick="setSub(\'senarai\')">📋 Senarai Perlawanan</button></div>';
+      if(SUB==='senarai') return h+'<div class="card" style="padding:6px 8px">'+senaraiPerlawananHTML(b)+'</div>';
+      return h+'<div class="card" style="padding:8px">'+bracketHTML(b)+'<div class="hint">👉 Leret ke kiri untuk lihat pusingan seterusnya. Kotak bergaris emas = pemenang.</div></div>';
+    }
+    var u=D.seni[k.id]||[], m=seniMarkah(k.sub), mk={};
+    if(m) (m.ranking||[]).forEach(function(r){ mk[r.pasukan+'|'+r.nama]=r; mk[r.pasukan]=mk[r.pasukan]||r; });
+    if(!u.length) return h+'<div class="empty">Giliran belum diundi.</div>';
+    h+='<div class="muted" style="margin-bottom:8px">Susunan giliran persembahan'+(m?(m.selesai?' • ✅ keputusan rasmi':' • markah sedang masuk'):'')+'</div>';
+    u.forEach(function(x){
+      var r=mk[x.pasukan], med=r&&r.tempat?(r.tempat===1?'🥇 ':r.tempat===2?'🥈 ':r.tempat===3?'🥉 ':''):'';
+      h+='<div class="gl"><div class="g">'+x.giliran+'</div><div><div class="p">'+esc(x.pasukan)+'</div>'+(x.ahli&&x.ahli.length?'<div class="a">'+x.ahli.map(esc).join(', ')+'</div>':'')+'</div>'+(r&&r.markah!=null&&r.markah!==''?'<div class="m">'+med+esc(r.markah)+'</div>':'')+'</div>';
+    });
+    return h;
+  }
+  function sel(slot,warna,m,side){
+    if(!slot) return '<div class="tm wait">⏳ menunggu</div>';
+    if(slot.bye) return '<div class="tm bye">— BYE —</div>';
+    if(slot.dq) return '<div class="tm dq">'+esc(slot.pesilat)+'<small>❌ DQ timbang</small></div>';
+    var w=m.winner&&m.winner===side, l=m.winner&&m.winner!==side;
+    return '<div class="tm '+warna+(w?' win':'')+(l?' lose':'')+'">'+(w&&m.win?'<span class="wb">'+esc(m.win)+'</span>':'')+'<b>'+esc(slot.pesilat)+'</b><small>'+esc(slot.pasukan)+'</small></div>';
+  }
+  function bracketHTML(b){
+    var h='<div class="bwrap"><div class="bracket">';
+    b.byR.forEach(function(rm,r){
+      h+='<div class="bcol"><div class="rh">'+namaP(b.rounds-r)+'</div><div class="bround">';
+      rm.forEach(function(m){
+        var a=peserta(m,'a'), bb=peserta(m,'b');
+        var hd=!m.no?'<span class="mno auto">auto</span>':(m.induk?'<span class="mno">#'+m.induk+'</span>':'');
+        h+='<div class="match">'+hd+sel(a,'biru',m,'a')+sel(bb,'merah',m,'b')+'</div>';
+      });
+      h+='</div></div>';
+    });
+    var ch=pemenang(b.byR[b.rounds-1][0]);
+    h+='<div class="bcol"><div class="rh">🏆 Juara</div><div class="bround"><div class="match champ"><div><div class="t">🏆</div>'+(ch?'<div class="cn">'+esc(ch.pesilat)+'</div><div class="l">'+esc(ch.pasukan)+'</div>':'<div class="l">menunggu</div>')+'</div></div></div></div>';
+    return h+'</div></div>';
+  }
+  function senaraiPerlawananHTML(b){
+    var list=[];
+    b.byR.forEach(function(rm){ rm.forEach(function(m){ if(!m.no) return; list.push({no:m.induk||m.no, induk:!!m.induk, pus:namaP(b.rounds-m._r), a:peserta(m,'a'), b:peserta(m,'b'), w:m.winner?pemenang(m):null, win:m.win, skor:m.skor}); }); });
+    list.sort(function(x,y){ return x.no-y.no; });
+    function c(s){ return s?('<b>'+esc(s.pesilat)+'</b><br><small>'+esc(s.pasukan)+'</small>'):'<small>⏳ menunggu</small>'; }
+    var h='<table class="tbl"><thead><tr><th>No</th><th>Biru</th><th>Merah</th><th>Pemenang</th></tr></thead><tbody>';
+    list.forEach(function(x){ h+='<tr class="'+(x.w?'done':'')+'"><td><span class="no">'+(x.induk?'#':'')+x.no+'</span><br><small>'+x.pus+'</small></td><td class="sb">'+c(x.a)+'</td><td class="sm">'+c(x.b)+'</td><td>'+(x.w?'<span class="won">'+esc(x.w.pesilat)+'</span>'+(x.win?' <small>'+esc(x.win)+(x.skor?' '+esc(x.skor):'')+'</small>':''):'<small>—</small>')+'</td></tr>'; });
+    return h+'</tbody></table>';
+  }
+
+  /* ===================== JADUAL ===================== */
+  function jadualHTML(){
+    var h='<div class="seg"><button class="'+(JSUB==='olah'?'on':'')+'" onclick="setJSub(\'olah\')">🥊 Olahraga</button><button class="'+(JSUB==='seni'?'on':'')+'" onclick="setJSub(\'seni\')">🎭 Seni</button></div>';
+    return h+(JSUB==='olah'?jadualOlahHTML():jadualSeniHTML());
+  }
+  function petaPemenang(){
+    // no. perlawanan induk -> pemenang (jika sudah ada keputusan)
+    var map={};
+    Object.keys(D.carta||{}).forEach(function(id){ var b=bina(D.carta[id]); if(!b) return; b.byR.forEach(function(rm){ rm.forEach(function(m){ if(m.induk && m.winner){ var w=pemenang(m); if(w) map[m.induk]={w:w,win:m.win,skor:m.skor}; } }); }); });
+    return map;
+  }
+  function jadualOlahHTML(){
+    var I=D.induk||{};
+    if(!I.selesai) return '<div class="card"><div class="empty"><div class="big">🔒</div>Jadual induk akan dipaparkan selepas semua kategori diundi.<br><small>'+(I.diundi||0)+'/'+(I.jumlah||0)+' kategori telah diundi.</small><br><br>Sementara itu, lihat carta setiap kategori di tab <b>🏆 Carta</b>.</div></div>';
+    var pw=petaPemenang(), q='', h='<div class="muted" style="margin-bottom:6px">✅ '+I.total+' perlawanan • ✔ = keputusan sudah direkod</div>';
+    (I.jadual||[]).forEach(function(ph){
+      var siap=ph.rows.filter(function(x){ return pw[x.no]; }).length;
+      h+='<div class="phase"><span class="pl">PUSINGAN '+ph.pusingan+'</span><span class="pd"></span><span class="pc">'+siap+'/'+ph.rows.length+' selesai</span></div><div class="card" style="padding:4px 8px"><table class="tbl"><thead><tr><th>No</th><th>Biru</th><th>Merah</th></tr></thead><tbody>';
+      ph.rows.forEach(function(x){
+        var w=pw[x.no];
+        function lb(s){ if(!s) return '—'; if(s.pemenang) return '<small><i>Pemenang #'+s.pemenang+'</i></small>'; if(s.kosong) return '<small>—</small>'; var won=w && w.w && w.w.pesilat===s.pesilat && w.w.pasukan===s.pasukan; return '<span class="'+(won?'won':'')+'">'+(won?'✔ ':'')+esc(s.pesilat)+'</span><br><small>'+esc(s.pasukan)+'</small>'; }
+        h+='<tr class="'+(w?'done':'')+'"><td><span class="no">'+x.no+'</span></td><td class="sb"><small>'+esc(x.kat)+' • '+esc(x.peringkat)+'</small><br>'+lb(x.biru)+'</td><td class="sm"><small>&nbsp;</small><br>'+lb(x.merah)+'</td></tr>';
+      });
+      h+='</tbody></table></div>';
+    });
+    return h;
+  }
+  function jadualSeniHTML(){
+    var ks=(D.kategori||[]).filter(function(k){ return k.jenis==='seni' && D.seni[k.id]; });
+    if(!ks.length) return '<div class="empty"><div class="big">🎭</div>Giliran Seni belum diundi.</div>';
+    var h='';
+    ks.forEach(function(k){
+      h+='<div class="card"><div style="font-weight:800;font-size:13.5px;margin-bottom:8px">'+(IC[k.acara]||'')+' '+esc(k.acara)+' <span class="muted">• '+esc(k.sub)+'</span></div>';
+      D.seni[k.id].forEach(function(u){ h+='<div class="gl" style="padding:8px 10px"><div class="g" style="width:28px;height:28px;font-size:12px">'+u.giliran+'</div><div><div class="p" style="font-size:13px">'+esc(u.pasukan)+'</div>'+(u.ahli&&u.ahli.length?'<div class="a">'+u.ahli.map(esc).join(', ')+'</div>':'')+'</div></div>'; });
+      h+='</div>';
+    });
+    return h;
+  }
+
+  /* ===================== KEPUTUSAN ===================== */
+  function keputusanHTML(){
+    var P=D.pingat||{}, h='', n=0;
+    var olah=(P.olah||[]).filter(function(k){ return k.selesai; });
+    var seni=(P.seni||[]);
+    if(olah.length){
+      h+='<h2 class="st">🥊 Silat Olahraga</h2>';
+      olah.forEach(function(k){ n++;
+        h+='<div class="res"><div class="k">'+esc(k.sub)+'</div>';
+        if(k.emas) h+='<div class="r"><span class="md">🥇</span><span><b>'+esc(k.emas.pesilat)+'</b> <small>'+esc(k.emas.pasukan)+'</small></span></div>';
+        if(k.perak) h+='<div class="r"><span class="md">🥈</span><span><b>'+esc(k.perak.pesilat)+'</b> <small>'+esc(k.perak.pasukan)+'</small></span></div>';
+        (k.gangsa||[]).forEach(function(x){ h+='<div class="r"><span class="md">🥉</span><span><b>'+esc(x.pesilat)+'</b> <small>'+esc(x.pasukan)+'</small></span></div>'; });
+        h+='</div>';
+      });
+    }
+    if(seni.length){
+      h+='<h2 class="st" style="margin-top:16px">🎭 Seni</h2>';
+      seni.forEach(function(k){ n++;
+        h+='<div class="res"><div class="k">'+esc(k.sub)+' '+(k.selesai?'<span class="bdg b-done">Rasmi</span>':'<span class="bdg b-live">Sementara</span>')+'</div>';
+        (k.ranking||[]).slice(0,3).forEach(function(r){ var md=r.tempat===1?'🥇':r.tempat===2?'🥈':r.tempat===3?'🥉':r.tempat; h+='<div class="r"><span class="md">'+md+'</span><span><b>'+esc(r.pasukan)+'</b>'+(r.nama&&r.nama!==r.pasukan?' <small>'+esc(r.nama)+'</small>':'')+'</span><span class="sk">'+esc(r.markah)+'</span></div>'; });
+        h+='</div>';
+      });
+    }
+    if(!n) return '<div class="empty"><div class="big">⏳</div>Belum ada keputusan muktamad.<br>Keputusan akan muncul di sini sebaik sahaja direkod.</div>';
+    return h;
+  }
+
+  /* ===================== PINGAT ===================== */
+  function pingatHTML(){
+    var P=D.pingat||{}, pg=P.pungutan||[], h='';
+    h+='<h2 class="st">🏅 Kedudukan Pingat Pasukan</h2>';
+    if(!pg.length) h+='<div class="card"><div class="empty">Belum ada pingat dimenangi.</div></div>';
+    else{
+      h+='<div class="card" style="padding:4px 8px"><table class="tbl ptbl"><thead><tr><th>#</th><th>Pasukan</th><th>🥇</th><th>🥈</th><th>🥉</th><th>Jum</th></tr></thead><tbody>';
+      pg.forEach(function(p,i){ h+='<tr class="'+(i===0?'rk1':'')+'"><td><b>'+(i===0?'👑':(i+1))+'</b></td><td><b>'+esc(p.pasukan)+'</b></td><td>'+p.emas+'</td><td>'+p.perak+'</td><td>'+p.gangsa+'</td><td><b>'+p.jumlah+'</b></td></tr>'; });
+      h+='</tbody></table></div>';
+    }
+    function blok(t,a){ var s='<div class="iv"><div class="h">'+t+'</div><div style="padding:6px 12px">'; if(!a||!a.length) s+='<div class="muted" style="padding:6px 0">Belum ada.</div>'; (a||[]).slice(0,5).forEach(function(v,i){ s+='<div class="rr"><span class="n">'+(i===0?'👑':(i+1))+'</span><span style="flex:1"><b>'+esc(v.nama)+'</b><small>'+esc(v.pasukan)+'</small></span><span style="font-size:11px;white-space:nowrap">'+(v.emas?'🥇'+v.emas+' ':'')+(v.perak?'🥈'+v.perak+' ':'')+(v.gangsa?'🥉'+v.gangsa:'')+'</span></div>'; }); return s+'</div></div>'; }
+    h+='<h2 class="st" style="margin-top:18px">🌟 Pesilat Terbaik Keseluruhan</h2><div class="ivgrid">'+blok('👦 Putera',P.putera)+blok('👧 Puteri',P.puteri)+'</div>';
+    var pr=P.peringkat||[];
+    if(pr.length){
+      h+='<h2 class="st" style="margin-top:18px">🎖️ Pesilat Terbaik Ikut Kategori Usia</h2><div class="ivgrid">';
+      pr.forEach(function(g){
+        h+='<div class="iv"><div class="h">'+esc(g.label)+'</div><div class="c">';
+        [['👦 Putera',g.putera],['👧 Puteri',g.puteri]].forEach(function(s){
+          h+='<div class="j"><div class="jh">'+s[0]+'</div>';
+          var a=(s[1]||[]).slice(0,3); if(!a.length) h+='<div class="muted" style="font-size:11.5px">—</div>';
+          a.forEach(function(v,i){ h+='<div class="rr"><span class="n">'+(i===0?'👑':(i+1))+'</span><span><b>'+esc(v.nama)+'</b><small>'+esc(v.pasukan)+' • '+(v.emas?'🥇'+v.emas+' ':'')+(v.perak?'🥈'+v.perak+' ':'')+(v.gangsa?'🥉'+v.gangsa:'')+'</small></span></div>'; });
+          h+='</div>';
+        });
+        h+='</div></div>';
+      });
+      h+='</div>';
+    }
+    return h;
+  }
+
+  /* ===================== mula ===================== */
+  (function(){
+    var hs=(location.hash||'').replace('#','').split('/');
+    if(['carta','jadual','keputusan','pingat'].indexOf(hs[0])>=0) TAB=hs[0];
+    if(hs[1]) KAT=hs[1];
+    render(false); muat(false);
+  })();
+</script>
+</body>
+</html>
