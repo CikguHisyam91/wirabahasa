@@ -35,17 +35,16 @@ input,select{width:100%;padding:12px;border-radius:12px;border:2px solid #2f3f7a
 #gameScr{flex-direction:column;padding:0;background:#000}
 #cvWrap{position:relative;width:100%;max-width:1100px;aspect-ratio:16/9;max-height:100vh}
 canvas{width:100%;height:100%;display:block;image-rendering:auto}
-#touch{display:none;position:relative;width:100%;height:300px;background:#0b1020;touch-action:none;user-select:none;-webkit-user-select:none}
+#touch{display:none;position:relative;width:100%;height:220px;background:#0b1020;touch-action:none;user-select:none;-webkit-user-select:none}
 #gameScr.on.mob{touch-action:none}
-#dpad{position:absolute;left:18px;bottom:24px;width:170px;height:170px;border-radius:50%;background:#ffffff18;border:2px solid #ffffff44;pointer-events:auto}
-#knob{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:#ffffff55;border:2px solid #fff9}
-.ar{position:absolute;color:#fffa;font-size:22px;pointer-events:none}.aL{left:12px;top:50%;transform:translateY(-50%)}.aR{right:12px;top:50%;transform:translateY(-50%)}.aU{top:8px;left:50%;transform:translateX(-50%)}
-#abtn{position:absolute;right:14px;bottom:20px;width:230px;height:190px}
-#abtn .tb{width:78px;height:78px;flex-direction:column;line-height:1}
-#abtn .tb b{font-size:24px}#abtn .tb small{font-size:10px;margin-top:3px}
-#tF{right:0;bottom:40px;background:#ff5e5e77!important;width:92px!important;height:92px!important}
-#tJ{right:104px;bottom:0;background:#2e86de77!important}
-#tB{right:104px;bottom:100px;background:#f5c51844!important}#tB.ada{background:#f5c518cc!important;box-shadow:0 0 18px #f5c518;animation:dny 1s infinite}
+#dpad{position:absolute;left:16px;bottom:20px;width:130px;height:130px;border-radius:50%;background:#ffffff18;border:2px solid #ffffff44;pointer-events:auto}
+#knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:#ffffff55;border:2px solid #fff9}
+.ar{position:absolute;color:#fffa;font-size:15px;pointer-events:none}.aL{left:12px;top:50%;transform:translateY(-50%)}.aR{right:12px;top:50%;transform:translateY(-50%)}.aU{top:8px;left:50%;transform:translateX(-50%)}
+#abtn{position:absolute;right:12px;bottom:16px;width:170px;height:140px}
+#abtn .tb{width:58px;height:58px;font-size:10px;font-weight:900;letter-spacing:.3px}
+#tF{right:0;bottom:30px;background:#ff5e5e77!important;width:68px!important;height:68px!important}
+#tJ{right:76px;bottom:0;background:#2e86de77!important}
+#tB{right:76px;bottom:72px;background:#f5c51844!important}#tB.ada{background:#f5c518cc!important;box-shadow:0 0 18px #f5c518;animation:dny 1s infinite}
 @keyframes dny{50%{transform:scale(1.08)}}
 .tb.on{filter:brightness(1.6);transform:scale(.94)}
 #fsBtn{position:absolute;top:8px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:10px;border:2px solid #fff6;background:#0007;color:#fff;font:800 12px Nunito;pointer-events:auto}
@@ -53,8 +52,8 @@ canvas{width:100%;height:100%;display:block;image-rendering:auto}
 @media (orientation:landscape){
  #gameScr.mob #touch{position:fixed;inset:0;height:auto;background:none;pointer-events:none;z-index:20}
  #gameScr.mob #cvWrap{max-height:100vh;width:auto;height:100vh;max-width:100vw}
- #gameScr.mob #dpad{opacity:.75;left:20px;bottom:18px;width:150px;height:150px}
- #gameScr.mob #abtn{opacity:.8;bottom:10px;right:10px}
+ #gameScr.mob #dpad{opacity:.6;left:16px;bottom:14px;width:110px;height:110px}
+ #gameScr.mob #abtn{opacity:.7;bottom:8px;right:8px;transform:scale(.85);transform-origin:bottom right}
  #gameScr.mob #rotHint{display:none}
  #gameScr.mob #fsBtn{top:auto;bottom:8px;left:50%;transform:translateX(-50%);opacity:.7}
 }
@@ -157,9 +156,9 @@ canvas{width:100%;height:100%;display:block;image-rendering:auto}
 <div id="touch">
  <div id="dpad"><div id="knob"></div><span class="ar aL">◀</span><span class="ar aR">▶</span><span class="ar aU">▲</span></div>
  <div id="abtn">
-  <div class="tb" id="tB"><b>C</b><small>KHAS</small></div>
-  <div class="tb" id="tJ"><b>Z</b><small>LOMPAT</small></div>
-  <div class="tb" id="tF"><b>X</b><small>TEMBAK</small></div>
+  <div class="tb" id="tB">KHAS</div>
+  <div class="tb" id="tJ">LOMPAT</div>
+  <div class="tb" id="tF">TEMBAK</div>
  </div>
  <button id="fsBtn">⛶ SKRIN PENUH</button>
  <div id="rotHint">📱↻ Pusingkan telefon (melintang) untuk skrin lebih besar</div>
@@ -168,6 +167,7 @@ canvas{width:100%;height:100%;display:block;image-rendering:auto}
 
 <div id="modal"><div class="mbox" id="mbox"></div></div>
 
+<script src="soalan.js"></script>
 <script>
 /* ================== DATA SOALAN (Rujukan tatabahasa DBP) ================== */
 const P={
@@ -742,9 +742,9 @@ function closeModal(){$("modal").classList.remove("on")}
 function pickQs(n){
  const pool=(G.tahun<=3?QR:QT.concat(G.lv>=3&&G.tahun<=3?[]:[]));
  const ext=G.tahun>=4&&G.lv<=2?QR.filter(function(q){return q.t==="Situasi"||q.t==="Kefahaman"}).slice(0,4):[];
- const all=shuf(pool.concat(ext));
+ const all=shuf(pool.concat(ext).concat((typeof SOALAN!=="undefined"&&SOALAN[G.tahun])||[]));
  const kef=all.filter(function(q){return q.p});const rest=all.filter(function(q){return !q.p});
- const out=[];if(kef.length)out.push(kef[0]);if(kef.length>1&&n>=5)out.push(kef[1]);
+ const out=[];if(kef.length)out.push(kef[0]);
  for(const q of rest){if(out.length>=n)break;out.push(q)}
  return shuf(out).map(function(q){const ans=q.o[0];const o=shuf(q.o);return {t:q.t,q:q.q,p:q.p,o:o,a:o.indexOf(ans)}});
 }
